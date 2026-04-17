@@ -1,0 +1,580 @@
+# Nesse código estaremos realizando as análises da base de dados gerada pelo scriot anterior
+
+# Criar uma aba de text0 no google colbab
+# =========================================
+# ** Montar o Drive **
+# =========================================
+
+from google.colab import drive
+drive.mount('/content/drive')
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+# =========================================
+# ** Listar o conteúdo do Drive **
+# =========================================
+
+file_path = '/content/drive/MyDrive/( a pasta onde foi salvo arquivo CSV, será necessário salvar o arquivo no drive, preferencialmente em uma pasta a parte)'
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+# =========================================
+# ** Método ETL (Extract, Transform and Load) **
+# =========================================
+
+import pandas as pd
+
+# Use o caminho completo para o arquivo CSV no Google Drive
+file_path = '/content/drive/MyDrive/'
+df = pd.read_csv(file_path)
+
+# Remover dados críticos nulos
+# Correção: dropna é um método do DataFrame, e evite inplace=True com reatribuição
+df = df.dropna(subset=['preco', 'bairro', 'quartos'])
+
+#Preencher nota de satisfação (caso seja nulo)
+df['nota_satisfacao'] = df['nota_satisfacao'].fillna(df['nota_satisfacao'].mean())
+
+# Ressaltamos que o arquivo CSV foi criado via Script no colab
+# Esse script foi feito para não ter dados nulos
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** KPIS **
+
+# Criar um notebook no google colab
+#=============================
+# KPI 1 - TAXA DE CONVERSÃO
+#=============================
+
+taxa_conversao = df['fechou_negocio'].mean()
+
+print(f'Taxa de Conversão: {taxa_conversao:.0%}')
+print("--> Indica baixa eficiência na conversão de leads\n")
+print(
+    f'A taxa de conversão é de {taxa_conversao:.0%}, estando diretamente ligada ao objetivo de aumentar em 35% a conversão de leads, sendo o principal indicador de sucesso comercial.')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um notebook no google colab
+#=======================================
+# KPI 2 - TAXA DE VISITAS IMPRODUTIVAS
+#=======================================
+
+taxa_improdutiva = ((df['visitou']==1) & (df['fechou_negocio']==0)).mean()
+
+print(f'Taxa de Visitas Improdutivas: {taxa_improdutiva:.0%}')
+print("--> Relaciona-se diretamente com o objetivo de reduzir as visitas improdutivas. \n")
+print(
+    f'A taxa de visitas improdutivas é de {taxa_improdutiva:.0%}, com isso o obetivo é reduzir as visitas improdutivas em 50%, evidenciando a eficiência das recomendações.')
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#=======================================
+# KPI 3 - TEMPO MÉDIO DE BUSCA
+#=======================================
+
+tempo_medio = df['tempo_busca_dias'].mean()
+
+print(f'Tempo Médio do Busca: {tempo_medio:.0f} dias')
+print(
+    f'O tempo médio de busca é de {tempo_medio:.0f} dias, um indicador crucial da eficiência a jornada do cliente, onde tempos menores refletem a eficiência do sistema')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#=======================================
+# KPI 4 - SATISFAÇÃO (NPS)
+#=======================================
+
+nps = df['nota_satisfacao'].mean()
+
+print(f'A Nota Média de Satisfação (NPS Base) é: {nps:.2f}')
+print("--> Alinhado ao objetivo de elevar o NPS, refletindo a percepção do cliente./n")
+print(
+    f'A nota média de satisfação é de {nps:.2f}, alinhado ao objetivo d elevar o NPS Base, refletindo a percepção do cliente em relação ao sistema')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#=======================================
+# KPI 5 - ENGAJAMENTO
+#=======================================
+
+engajamento = df['interacoes'].mean()
+
+print(f'Média de interações: {engajamento: .2f}')
+print("--> Usuários mais engajados fornecem mais dados, permitindo personalização pelo sistema de IA.\n")
+print(
+    f'A média de interações por usuário é de {engajamento: .2f}, um indicativo de que usuários mais engajados fornecem mais dados, o que é fundamental para a personalização do sistema de IA.')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Métodos Estatísticos **
+
+# Criar um novo notebook no google colab
+#==================================================
+# ESTATÍSTICA DESCRITIVA, MÉDIA, MEDIANA E DESVIO
+#==================================================
+
+# Foram aplicads médias de tendência central e dispersão
+# para analisar o comportameto dos dados
+
+import pandas as pd
+import numpy as np
+
+# Leitura do Dataset
+df = pd.read_csv('/content/drive/MyDrive/(pasta do drive onde o arquivo csv foi salvo)') #CSV do dataset
+
+# Estatística Descritiva do tempo de busca
+media_tempo = df['tempo_busca_dias'].mean()
+mediana_tempo = df['tempo_busca_dias'].median()
+desvio_tempo = df['tempo_busca_dias'].std()
+
+print(f"Tempo médio de busca: {media_tempo:.0f} dias")
+print(f"Mediana do tempo de busca: {mediana_tempo:.0f} dias")
+print(f"Desvio padrão do tempo de busca: {desvio_tempo:.0f} dias")
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#==================================================
+# ESTATÍSTICA DESCRITIVA, MÉDIA, MEDIANA E DESVIO
+#==================================================
+
+media_nps = df['nota_satisfacao'].mean()
+mediana_nps = df['nota_satisfacao'].median()
+desvio_nps = df['nota_satisfacao'].std()
+
+print(f'Média da Nota de Satisfação: {media_nps:.2f}')
+print(f'Mediana da Nota de Satisfação: {mediana_nps:.2f}')
+print(f'Desvio Padrão da Nota de Satisfação: {desvio_nps:.2f}')
+print('--> A média, mediana e desvio padrão nos ajudam a entender a distribuição e a variabilidade das notas de satisfação dos clientes.')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#==================================================
+# ESTATÍSTICA DESCRITIVA, MÉDIA, MEDIANA E DESVIO
+#==================================================
+
+media_engajamento = df['interacoes'].mean()
+mediana_engajamento = df['interacoes'].median()
+desvio_engajamento = df['interacoes'].std()
+
+print(f"Média de Interações: {media_engajamento:.2f}")
+print(f"Mediana de Interações: {mediana_engajamento:.2f}")
+print(f"Desvio Padrão de Interações: {desvio_engajamento:.2f}")
+print("--> Essas métricas nos dão uma ideia do nível médio de interação dos usuários e quão variados são esses níveis.")
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+** Análise de Distribuição **
+
+# Criar um novo notebook no google colab
+#=================================================
+# CONFIGURAÇÕES INICIAIS DOS GRÁFICOS
+#=================================================
+from scipy.stats import skew, kurtosis
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Define o estilo visual dos gráficos do Seabron para "Whitegrid" (gráfico com o fundo branco)
+sns.set_style('whitegrid')
+
+# Configura o tamanho padrão das figuras (gráficas) que serão criadas pelo Matplotlib para 10 poleagas de largura para 6 polegadas de altura
+plt.rcParams['figure.figsize'] = (10, 6)
+
+#=================================================
+# ANÁLISE DE DISTRIBUIÃO PARA O TEMPO DE BUSCA
+#=================================================
+
+# Cria um histograma para a coluna "tempo_busca_dias" do "DataFrame" df
+# bins=10 divide os dados em 10 intervalos (barras)
+# kde=True adiciona uma estmativa de densidade de kernel (linha suave) que mostra a distribuição da probabilidade dos dados.
+sns.histplot(df['tempo_busca_dias'], bins=10, kde=True)
+# Define o título do gráfico
+plt.title('Distribuição do Tempo de Busca')
+# Define o rótulo do eixo X (Horizontal)
+plt.xlabel('Dias')
+# Define o rótulo do eixo Y (Vertical)
+plt.ylabel('Frequência de Clientes')
+# Exibe o gráfico
+plt.show()
+
+# Calcula a assimetria (Skewness) da distribuição do 'tempo_busca_dias'
+# Assimetria mede a falta de simetria de uma distribuição de probabilidade
+assimetria_tempo = skew(df['tempo_busca_dias'])
+# Calcula o achamento (kurtosis) da distribuição do 'tempo_busca_dias'
+# Curtose mede o 'pico' ou o 'achatamento' da distribuição com uma distribuição, em comparação com uma distribuição normal
+achatamento_tempo = kurtosis(df['tempo_busca_dias'])
+
+# Imprime os valores calculados de assimentria e achatamento, formatados com duas casas decimais
+print(f"Assimetria do Tempo de Busca: {assimetria_tempo: .2f}")
+print(f"Achatamento do Tempo de Busca: {achatamento_tempo: .2f}")
+
+
+#=======================================================
+# INTERPRETAÇÃO DOS RESULTADOS
+#=======================================================
+
+# Skew > 0: Indica uma distribuição assimtrética à direita.
+# Isso significa que a maioria dos clientes tem um tempo de busca baixo e poucos clientes têm tempo de busca alto.
+# Skew < 0 : Indica uma distribução assimétrica à esquerda, sendo o oposto ao anterior.
+# Kurtosis Alto: Sugere um pico mais acentuado na distribuição, indicando que os daods estão concentrados em torno da média, ou seja, muitos clientes têm tempo de busca parecido.
+# Kurtosis Baixo: Sugere uma distribuição mais achatada, indicando que os dados estão mais dispersos, ou seja, há um maior variedade nso tempo de busca dos clientes.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+#===================================================
+# ANÁLISE DE DISTRIBUIÃO PARA A NOTA DE SATISFAÇÃO
+#===================================================
+
+# Cria um histograma para a coluna 'nota_satisfacao'
+# Bins=10 divide os dados em 10 intervalos
+# kde=True adiciona a linha de estimativa de densidade de kernel
+# Color='lightgreen' define a cor das barras
+sns.histplot(df['nota_satisfacao'], bins=10, kde=True, color="lightgreen")
+# Define o título do gráfico
+plt.title('Distribuição da Nota de Satisfação')
+# Define o rótulo do eixo X
+plt.xlabel('Nota de Satisfação')
+# Define o rótulo do eixo Y
+plt.ylabel('Frequência')
+# Exibe o gráfico
+plt.show()
+
+# Calculo de assimetria da distribuição das notas de satisfação
+assimetria_nps = skew(df['nota_satisfacao'])
+# Calculo de achatamento da distribuição das notas de satisfação
+achatamento_nps = kurtosis(df['nota_satisfacao'])
+
+# Imprime os valores calculados
+print(f"Assimetria da Nota de Satisfação: {assimetria_nps:.2f}")
+print(f"Achatamento da Nota de Satisfação: {achatamento_nps:.2f}")
+
+
+#=======================================================
+# INTERPRETAÇÃO DOS RESULTADOS
+#=======================================================
+
+# Interpretação dos resultados para 'Nota de Satisfação':
+# Skew > 0: Distribuição assimétrica à direita, sugerindo que há mais notas baixas.
+# Skew < 0: Distribuição assimétrica à esquerda, sugerindo que há mais notas altas.
+# Kurtosis alta: Concentração de notas em poucos valores, indicando que a maioria dos clientes deu notas muito parecidas.
+# Kurtosis baixa: Notas mais espalhadas, indicando uma maior variedade nas notas de satisfação.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook np gpoogle colab
+#===================================================
+# ANÁLISE DE DISTRIBUIÃO PARA AS INTERÇÕES
+#==================================================
+
+#  Cria um histograma para a coluna 'interacoes'.
+# 'bins=20' divide os dados em 20 intervalos.
+# 'kde=True' adiciona a linha de estimativa de densidade de kernel.
+# 'color='lightskyblue'' define a cor das barras do histograma.
+sns.histplot(df['interacoes'], bins=20, kde=True, color='lightskyblue')
+# Define o título do gráfico
+plt.title('Distribuição dos números das Interações')
+# Define o rótulo do eixo X
+plt.xlabel('Número de Interações')
+# Define o rótulo do eixo Y
+plt.ylabel('Frequência')
+# Exibe o gráfico
+plt.show()
+
+# Calculo da assimetria da distribuição das interações
+assimetria_interacoes = skew(df['interacoes'])
+# Calculo do achatamento  da distribuição das interações
+achatamento_interacoes = kurtosis(df['interacoes'])
+
+# Imprime os valores calculados
+print(f"Assimetria das Interações: {assimetria_interacoes:.2f}")
+print(f"Achatamento das Interações: {achatamento_interacoes:.2f}")
+
+
+#=======================================================
+# INTERPRETAÇÃO DOS RESULTADOS
+#=======================================================
+
+# Interpretação dos resultados para 'Interações':
+# Skew > 0: Distribuição assimétrica à direita, indicando que muitos usuários têm poucas interações.
+# Skew < 0: Distribuição assimétrica à esquerda, indicando que muitos usuários têm muitas interações.
+# Kurtosis alta: Pico acentuado, sugerindo que a maioria dos usuários tem um número de interações semelhante.
+# Kurtosis baixa: Interações mais variadas entre os usuários, indicando uma maior diversidade nos níveis de engajamento.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Identificação de Outliers **
+
+# Criar um novo notebook no gooogle colab
+# ==================================================================
+# IDENTIFICAÇÃO DE OUTLIERS PARA O TEMPO DE BUSCA
+# ==================================================================
+
+# Calcula a média da coluna 'tempo_busca_dias' e o desvio padrão.
+# Outliers são identificados como valores que estão acima de 2 desvios padrões de média
+# Isso é uma regra comum para identificar valores que se desviam significativamente da maioria dos dados
+outliers_tempo = df[df['tempo_busca_dias'] > df['tempo_busca_dias'].mean() + 2 * df['tempo_busca_dias'].std()]
+
+# Imprime o número de linhas (outliers) encontrados no DataFrame.
+# shape[0] retonra o número de linhas (que representam outliers)
+print(f"Número de Outliers encontrados no Tempo de Busca é: {outliers_tempo.shape[0]}")
+
+
+# ==================================================================
+# INTERPRETAÇÃO PARA O TEMPO DE BUSCA
+# ==================================================================
+
+# Um número elevado de outliers neste contexto pode indicar problemas como visitas improdutivas (clientes que demoram muito para fechar negócio ou desistem), o que leva à perda de tempo tanto para os clientes quanto para os corretores.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+# ==================================================================
+# IDENTIFICAÇÃO DE OUTLIERS PARA NOTA DE SATISFAÇÃO - NPS
+# ==================================================================
+
+# Identifica outliers com notas de satisfação muito baixas
+# Serão considerados outliers valores que estão avaixo de 2 desvios padrão da média
+outliers_nps_min = df[df['nota_satisfacao'] < df['nota_satisfacao'].mean() -2 * df['nota_satisfacao'].std()]
+
+# Identifica outliers com notas de satisfação muito altas
+# São considerados outlier valores que estão acima de 2 devios padrões de média
+outliers_nps_max = df[df['nota_satisfacao'] > df['nota_satisfacao'].mean() + 2 * df['nota_satisfacao'].std()]
+
+# Imprime o número de outliers com notas baixas
+print(f"Número de outliers (notas muito baixa) nas Notas de Satisfação: {outliers_tempo.shape[0]}")
+# Imprime o número de outliers com notas altas
+print(f"O número de outlier (notas muito altas) nas Notas de Satisfação: {outliers_nps_max.shape[0]}")
+
+
+# ==================================================================
+# INTERPRETAÇÃO PARA AS NOTAS DE SATISFAÇÃO - NPS
+# ==================================================================
+
+# Outliers com notas muito baixas (min) podem sinalizar problemas graves na experiência do cliente que exigem investigação e ação corretiva.
+# Outliers com notas muito altas (max) podem indicar experiências excepcionais, que podem ser estudadas para replicar o sucesso.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# criar um novo notebook no google colab
+# ==================================================================
+# IDENTIFICAÇÃO DE OUTLIERS PARA AS INTERAÇÕES
+# ==================================================================
+
+# Identifica outliers com um número de interações muito alto.
+# São considerados outliers valores que estão acima de 2 desvios padrão da média de interações.
+outliers_interacoes = df[df['interacoes'] > df['interacoes'].mean() + 2 * df['interacoes'].std()]
+
+# Imprime o número de outliers encontrados
+print(f"Número de outliers nas interações: {outliers_interacoes.shape[0]}")
+
+
+# ==================================================================
+# INTERPRETAÇÃO PARA AS INTERAÇÕES
+# ==================================================================
+
+# Outliers com muitas interações podem ter duas conotações: podem ser usuários super engajados e valiosos, ou podem ser usuários que estão encontrando dificuldades em usar o sistema e precisam de muitas interações para atingir seus objetivos.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Apronfundamento de Outliers **
+
+# Criar um novo notebook no google colab
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(18, 6)) # Define o tamanho da figura (18 polegadas de largura por 6 polegadas de altura)
+
+# --- Boxplot para Tempo de Busca ---
+# Cria uma subplot na posição (1 linha, 3 colunas, 1° posição)
+plt.subplot(1, 3, 1) # Corrigido para a primeira posição
+# Gera um boxplot para a coluna 'tempo_busca_dias'
+sns.boxplot(y=df['tempo_busca_dias'])
+# Define o título do gráfico
+plt.title('Boxplot do Tempo de Busca (Dias)')
+# Define o rótulo do eixo Y
+plt.ylabel('Tempo de Busca (Dias)')
+
+# --- Boxplot para Nota de Satisfação ---
+# Cria uma subplot na posição (1 linha, 3 colunas, 2° posição)
+plt.subplot(1, 3, 2)
+# Gera um boxplot para a coluna 'nota_satisfacao', com a cor das caixas verde claro
+sns.boxplot(y=df['nota_satisfacao'], color='lightgreen')
+# Define o título do gráfico
+plt.title('Boxplot da Nota de Satisfação')
+# Define o rótulo do eixo Y
+plt.ylabel('Nota de Satisfação')
+
+# --- Boxplot para Interações ---
+# Cria uma subplot na posição (1 linha, 3 colunas, 3° posição)
+plt.subplot(1, 3, 3)
+# Gera um boxplot para a coluna 'interacoes'
+sns.boxplot(y=df['interacoes'], color='lightblue')
+# Define o título do gráfico
+plt.title('Boxplot do Número de Interações')
+# Define o rótulo do eixo Y
+plt.ylabel('Número de Interações')
+
+# Ajusta automaticamente os parâmetros do subplot para que caibam na área da figura.
+plt.tight_layout()
+# Exibe a figura com os três Box Plots.
+plt.show()
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Análise do Boxplot **
+
+**Análise do Boxplot**
+
+
+1.  **Tempo de Busca**
+
+
+*   Tendência Central: A Mediana (linha central), indica que a maioria dos clientes fecham negócio em aproximadamente 23 dias. A caixa, representa cerca de 50% dos clientes que fecham negócio entre o 1° e o 3° quartil.
+*   Dispersão: Mostra a variabilidade no tempo de busca. Parece haver uma distribuição razoavelmente concentrada para a maioria dos clientes.
+*   Outliers: A presença de pontos acima do bigode superior é notavel. Representando cientes que levam mais tempo para fechar um negócio em comparação a maioria.
+
+
+2.   **Nota de Satisfação - NPS**
+
+
+*   Tendência Central: A mediana sugere um nível de satisfação médio (6.6).
+*   Dispersão: Indica que a maioria das notas de satisfação esrá dentro da faix estreita. Significando, que há uma concentração de cliente que dão notas em um determinado intervalo.
+
+*   Outliers: Mostra pontos abaixo do bigode infeior. Mostra que há clientes com notas de satisfação excepcionalmente baixas (outliers de insatisfação). Indentificá-los e entender as razões por trás de sua baixa satisfação.
+
+
+3.   **Interações**
+
+
+*   Tendência Central: A mediana representa o número típico de interações dos usuários.
+
+*   Dispersão: A caixa e os bigodes mostram a variabilidade nas interações. Há usuários que interagem mais e outros não.
+
+*   Outliers: Sugere que não há muitos outliers altos, ou seja, não há um grupo significativo de usuários com um número extremamente alto de interações que de destacam drastivamente da média. Porém, há uma ausência de outliers altos não impede que a qualidade das interações seja um fator mais relevante que a quantidade para o fechamento do negócio.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Análise de Correlação **
+
+# Criar um novo notebook no google colab
+#=================================================
+# CONFIGURAÇÕES INICIAIS
+#=================================================
+
+# Importa a função 'pearsonr' da biblioteca 'scipy.stats', usada para calcular o coeficiente de correlação de Pearson e o p-valor.
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ============================================================================
+# ANÁLISE DE CORRELAÇÃO INDIVIDUAL: INTERAÇÕES VS FECHAMENTO DE NEGÓCIO
+# ============================================================================
+
+# Calcula a correlação PEARSON entre o número de 'interações' e a variável binária 'fechou_negócio'
+# pearsonr retorna dois valores: o coeficiente de correlação (variação de -1 e 1) e o p-valor
+correlacao_interacoes_fechamento, p_valor_nteracoes_fechamento = pearsonr(df['interacoes'], df['fechou_negocio'])
+# Imprime o coeficiente de correlação formatado com duas casas decimais.
+print(f"Correlação entre interações e fechamento de negócio: {correlacao_interacoes_fechamento:.2f}")
+
+# ==================================================================
+# INTERPRETAÇÃO
+# ==================================================================
+
+# Uma correlação baixa/moderada sugere que, embora haja alguma relação, nem todas as interações se traduzem diretamente em conversão. Isso pode indicar uma ineficiência no processo de recomendação ou que as interações não são de alta qualidade.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+# ============================================================================
+# ANÁLISE DE CORRELAÇÃO INDIVIDUAL: TEMPO DE BUSCA VS FECHAMENTO DE NEGÓCIO
+# ============================================================================
+
+# Calcula a correlação de Pearson entre 'tempo_busca_dias' e 'fechou_negocio'.
+correlacao_tempo_fechamento, p_valor_tempo_fechamento = pearsonr(df['tempo_busca_dias'], df['fechou_negocio'])
+# Imprime o coeficiente de correlação
+print(f"A Correlação entre o tempo de busca e o fechamento de negócio é: {correlacao_tempo_fechamento:.2f}")
+
+# ==================================================================
+# INTERPRETAÇÃO
+# ==================================================================
+
+#Uma correlação negativa indica que quanto menor o tempo que o cliente leva para buscar (menos dias), maior a probabilidade de fechar o negócio. Uma correlação positiva indicaria o oposto.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+# ============================================================================
+# ANÁLISE DE CORRELAÇÃO INDIVIDUAL: TEMPO DE BUSCA VS FECHAMENTO DE NEGÓCIO
+# ============================================================================
+
+# Calcula a correlação de Pearson entre 'tempo_busca_dias' e 'fechou_negocio'.
+correlacao_tempo_fechamento, p_valor_tempo_fechamento = pearsonr(df['tempo_busca_dias'], df['fechou_negocio'])
+# Imprime o coeficiente de correlação
+print(f"A Correlação entre o tempo de busca e o fechamento de negócio é: {correlacao_tempo_fechamento:.2f}")
+
+# ==================================================================
+# INTERPRETAÇÃO
+# ==================================================================
+
+#Uma correlação negativa indica que quanto menor o tempo que o cliente leva para buscar (menos dias), maior a probabilidade de fechar o negócio. Uma correlação positiva indicaria o oposto.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar um novo notebook no google colab
+# ============================================================================
+# MATRIZ DE CORRELAÇÃO ENTRE AS PRINCIPAIS MÉTRICAS
+# ============================================================================
+
+# Seleciona as colunas 'tempo_busca_dias', 'nota_satisfacao', 'fchou_negocio'
+# Em seguida calcula a matriz de correlação entre as colunas.
+# A matriz de correlação mostra a correlação de cada variável com todas as outras, incluindo ela mesma (sendo sempre 1).
+correlacao_matriz = df[['tempo_busca_dias', 'nota_satisfacao', 'interacoes', 'fechou_negocio']].corr()
+
+# Define o tamanho da figura para o gráfico.
+plt.figure(figsize=(10, 8))
+# Cria um heatmap da matriz de correlação
+# annot=True, exibe os valores de correlação em cada célula do heatmap.
+# cmap='coolwarm', define o esquema de cores, onde mais quentes indicam correlação positiva e cores mais fracas onde a correlação é negativa.
+# fmt=.2f, formata os número exibidos com duas casas decimais.
+# linewidths=.5, adiciona linhas entre as células para melhor visualização.
+sns.heatmap(correlacao_matriz, annot=True, cmap='coolwarm', fmt='.2f', linewidths=.5)
+# Define o título do gráfico
+plt.title("Matriz de Correlação entre as Principais Matrizes")
+# Exibe o gráfico
+plt.show()
+
+
+# ==================================================================
+# INTERPRETAÇÃO
+# ==================================================================
+
+# Valores próximos a 1: Indicam uma forte correlação positiva. Isso significa que, quando uma variável aumenta, a outra também tende a aumentar (ou diminuir, se ambas forem inversamente correlacionadas).
+# Valores próximos a -1: Indicam uma forte correlação negativa. Isso significa que, quando uma variável aumenta, a outra tende a diminuir.
+# Valores próximos a 0: Indicam pouca ou nenhuma correlação linear. As variáveis não têm uma relação linear clara.
+# Esta matriz permite visualizar as relações entre todas as métricas em conjunto, identificando padrões que podem ser cruciais para otimizar o sistema de recomendação e as estratégias de negócio. Por exemplo, se 'interacoes' tem baixa correlação com 'fechou_negocio', isso pode ser um ponto de melhoria no sistema de recomendação.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Criar uma aba de text0 no google colbab
+** Gráfico Nota de Satisfação VS Fechamento de Negócio **
+
+# Criar um novo notebook no google colab
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(10, 6)) # Define o tamanho da figura para o Scatter Plot
+
+# Cria o Scatter Plot
+# x='nota_satisfacao': Variável no eixo X
+# y='fechou_negocio': Variável no eixo Y
+# alpha=0.5: Define a transparência dos pontos (útil para ver a densidade onde há muitos pontos sobrepostos)
+sns.scatterplot(x=df['nota_satisfacao'], y=df['fechou_negocio'], alpha=0.5)
+
+# Define o título do gráfico
+plt.title('Scatter Plot: Nota de Satisfação vs. Fechamento de Negócio')
+# Define o rótulo do eixo X
+plt.xlabel('Nota de Satisfação')
+# Define o rótulo do eixo Y, com rótulos mais descritivos
+plt.ylabel('Fechou Negócio (0 = Não Fechou, 1 = Fechou)')
+
+# Define os ticks do eixo Y para mostrar apenas 0 e 1
+plt.yticks([0, 1], ['Não Fechou', 'Fechou'])
+
+# Adiciona uma grade para melhor leitura
+plt.grid(True, linestyle='--', alpha=0.6)
+
+# Exibe o gráfico
+plt.show()
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
