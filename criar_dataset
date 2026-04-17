@@ -1,0 +1,218 @@
+# 1. Esse código gerará o Dataset para realizarmos a análise de dados do projeto
+
+# ===========================
+# IMPORTAÇÃO DE BIBLIOTECAS
+# ===========================
+
+import pandas as pd
+import numpy as np
+import random
+
+# Define uma seed para reprodutibilidade
+np.random.seed(42)
+
+# ===========================
+# CONFIGURAÇÃO DO DATASET
+# ===========================
+n = 650 # número de linhas
+
+bairros = ['Centro', 'Vila Mariana', 'Moema', 'Pinheiros', 'Itaim Bibi',
+           'Vila Olímpia', 'Brooklin', 'Morumbi', 'Santana', 'Tatuapé',
+           'Mooca', 'Ipiranga', 'Lapa', 'Perdizes', 'Barra Funda',
+           'Campo Belo', 'Jardins', 'Butantã', 'Santo Amaro', 'Aclimação'
+]
+
+# Valores médios usados para gerar preços mais realistas
+valores_bairros = {
+    'Centro': 400000,
+    'Vila Mariana': 700000,
+    'Moema': 900000,
+    'Pinheiros': 850000,
+    'Itaim Bibi': 1000000,
+    'Vila Olímpia': 950000,
+    'Brooklin': 800000,
+    'Morumbi': 750000,
+    'Santana': 500000,
+    'Tatuapé': 600000,
+    'Mooca': 550000,
+    'Ipiranga': 500000,
+    'Lapa': 650000,
+    'Perdizes': 800000,
+    'Barra Funda': 600000,
+    'Campo Belo': 850000,
+    'Jardins': 1200000,
+    'Butantã': 550000,
+    'Santo Amaro': 500000,
+    'Aclimação': 700000
+}
+
+# Tipos de imóveis disponíveis
+tipos = ['Casa', 'Apartamento']
+
+# lista que armazenará todas as linhas doi dataset
+data = []
+
+# ============================
+# GERAÇÃO DOS DADOS
+# ============================
+
+# Loop que será executado 650 vezes, uma linha por vez
+for i in range(n):
+
+  # ------------------------------
+  # IDENTIFICAÇÃO
+  # ------------------------------
+
+  cliente_id = np.random.randint(1000, 9999)
+  imovel_id = np.random.randint(1000, 9999)
+
+
+  # ------------------------------
+  # DADOS DO IMÓVEL
+  # ------------------------------
+
+  # Escolhe um bairro aleatoriamente
+  bairro = np.random.choice(bairros)
+
+  # Gera o preço baseado no bairro (com variação aleatória)
+  preco = int(np.random.normal(valores_bairros[bairro],150000))
+
+  # Evita preços irreais (muito baixos)
+  preco = max(150000, preco)
+
+  # Característica do imóvel
+  quartos = np.random.randint(1, 5)         # entre 1 e 4 quartos
+  area_m2 = np.random.randint(30, 200)      # área entre 30 e 200 m²
+  tipo_imovel = np.random.choice(tipos)     # casa ou apartameto
+
+
+  # ------------------------------
+  # COMPORTAMENTO DO USUÁRIO
+  # ------------------------------
+
+  # Número de interações (Cliques e visualizações)
+  interacoes = np.random.randint(1, 50)
+
+  # Se o cliente declarou preferências (60% sim e 40% não)
+  preferencia_declarada = np.random.choice([0, 1], p=(0.4, 0.6))
+
+  # ------------------------------
+  # PROBABILIDADE DE VISITA
+  # ------------------------------
+
+  # A visita depende:
+  # - interações (quanto mais interações, maior o interesse)
+  # - preferência dfeclarada (melhora a recomendação)
+
+  prob_visita = min(1, 0.3 + (interacoes / 100) + (0.2 * preferencia_declarada))
+
+  # Gera 0 ou 1 com base na probabilidade
+  visitou = int(np.random.rand() < prob_visita)
+
+  # ------------------------------
+  # PROBABILIDADE DE FECHAMENTO
+  # ------------------------------
+
+  # O fechamento depende de:
+  # - ter visitado o imóvel
+  # - nível de engajamento (interações)
+  prob_fechamento = min(1, 0.1 + (0.3 * visitou) + (interacoes /200))
+
+
+  fechou_negocio = int(np.random.rand() < prob_fechamento)
+
+
+  # ------------------------------
+  # TEMPO DE BUSCA
+  # ------------------------------
+
+  # Tempo médio começa em 30 dias
+  # Quanto mais interações, menor tende a ser o tempo
+  tempo_busca_dias = int(np.random.normal(30 - (interacoes * 0.3), 10))
+
+  # Garante que nunca seja menor que 1 dia
+  tempo_busca_dias = max(1, tempo_busca_dias)
+
+
+  # ------------------------------
+  # SATISFAÇÃO (NPS)
+  # ------------------------------
+
+  # Nota inicial com média 6
+  nota_satisfacao = np.random.normal(6, 2)
+
+  # Se fechou negócio -> aumenta a satisfação
+  if fechou_negocio:
+    nota_satisfacao += 2
+
+  # Se demorou muito -> reduz a satisfação
+  if tempo_busca_dias > 40:
+    nota_satisfacao -= 1
+
+  # Limita entre 0 e 10 e arredonda
+  nota_satisfacao = round(np.clip(nota_satisfacao, 0, 10), 1)
+
+
+  # ------------------------------
+  # ADICIONA LINHA AO DATASET
+  # ------------------------------
+
+  data.append([
+      cliente_id, imovel_id, preco, bairro, quartos, area_m2,
+      tipo_imovel, visitou, fechou_negocio, tempo_busca_dias,
+      interacoes, preferencia_declarada, nota_satisfacao
+])
+
+#================================================================================================
+# Criar um novo notebook no google colab e colar o código a seguir
+#================================================================================================
+
+# 2. Criar o Data Frame
+
+# ------------------------------
+# CRIAÇÃO DO DATAFRAME
+# ------------------------------
+
+# Converte a lista em uma tabela estruturada
+
+df = pd.DataFrame(data, columns=[
+      'cliente_id',
+      'imovel_id',
+      'preco',
+      'bairro',
+      'quartos',
+      'area_m2',
+      'tipo_imovel',
+      'visitou',
+      'fechou_negocio',
+      'tempo_busca_dias',
+      'interacoes',
+      'preferencia_declarada',
+      'nota_satisfacao'
+])
+
+#================================================================================================
+# Criar um novo notebook no google colab e colar o código a seguir
+#================================================================================================
+
+# 3. Exportação do arquivo CSV gerado
+
+# Salva o dataset em formato CSV
+df.to_csv('dados_imobiliarios.csv', index=False)
+
+print("Base de dados gerada com sucesso!!!")
+print(df.head())
+
+
+#================================================================================================
+# Criar um novo notebook no google colab e colar o código a seguir
+#================================================================================================
+
+# 4. Downloado do arquivo CSV
+
+# ------------------------------
+# DOWNLOAD (APENAS NO COLAB)
+# ------------------------------
+
+from google.colab import files
+files.download('dados_imobiliarios.csv')
